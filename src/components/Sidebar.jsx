@@ -30,6 +30,11 @@ const Sidebar = () => {
         <img src={logo} alt="logo" className="w-full h-14 object contain"/>
         <NavLinks />
       </div>
+
+      {/* mobile sidebar */}
+      <div className="absolute md:hidden block top-6 right-3">
+        test
+      </div>
     </>
   )
 };
