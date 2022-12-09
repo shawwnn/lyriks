@@ -2,28 +2,39 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { DetailsHeader, Error, Loader, RelatedSongs } from "../components";
 import { setActiveSong, playPause } from "../redux/features/playerSlice";
-import { useGetSongDetailsQuery, useGetSongRelatedQuery } from "../redux/services/shazamCore";
+import { useGetSongDetailsQuery, useGetSongDetailsV2Query, useGetSongRelatedQuery } from "../redux/services/shazamCore";
 
 
 const SongDetails = () => {
-	const { songid} = useParams();
+	
+	const { songid } = useParams();
+	// console.log(songid);
 	const dispatch = useDispatch();
 	const { activeSong, isPlaying } = useSelector((state) => state.player);
 	const { data: songData, isFetching: isFetchingSongDetails } = useGetSongDetailsQuery({ songid });
+	// const songActionID = songData?.hub?.actions[0]?.id;
+  // const { data: songDataV2, isFetching: isFetchingSongDetailsV2 } = useGetSongDetailsV2Query({ songActionID });
   const { data, isFetching: isFetchingRelatedSongs, error } = useGetSongRelatedQuery({ songid });
+
+  // console.log(songData?.hub?.actions[0]?.id)
+	
+  // console.log(songActionID); // i cant retrieve the hub.action.id becuase it returns undefined even though it must return an actual value
+  // console.log(songDataV2);
   
+
   const handlePauseClick = () => {
     dispatch(playPause(false));
   };
 
-  const handlePlayClick = ({ song, i }) => {
+  const handlePlayClick = ( song, i ) => {
     dispatch(setActiveSong({ song, data, i}));
     dispatch(playPause(true));
   };
 
-	// if(isFetchingSongDetails || isFetchingRelatedSongs) return <Loader title="Searching song details" />;
+	if(isFetchingSongDetails || isFetchingRelatedSongs) return <Loader title="Searching song details" />;
 
-	// if(error) return <Error />;
+	if(error) return <Error />;
+
   
 	return (
 		<div className="flex flex-col">
@@ -46,6 +57,7 @@ const SongDetails = () => {
 				activeSong={activeSong}
 				handlePauseClick={handlePauseClick}
 				handlePlayClick={handlePlayClick}
+				// artistId=""
 				
 			/>
 		</div>
